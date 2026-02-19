@@ -19,7 +19,11 @@ app = FastAPI(title="RIFT CI/CD Healing Agent API", version="1.0.0")
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
+    allow_origins=[
+        "https://*.vercel.app",  # All Vercel deployments
+        "http://localhost:5173",  # Local development
+        "*"  # Allow all for now - update with specific Vercel URL later
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

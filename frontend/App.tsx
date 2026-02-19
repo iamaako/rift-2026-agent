@@ -18,7 +18,7 @@ import { PlayIcon, StopIcon, CpuIcon, GitBranchIcon } from './components/Icons';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 function App() {
-  const [repoUrl, setRepoUrl] = useState('https://github.com/rift-hackathon/vulnerable-app');
+  const [repoUrl, setRepoUrl] = useState('');
   const [teamName, setTeamName] = useState('RIFT ORGANISERS');
   const [teamLeader, setTeamLeader] = useState('Saiyam Kumar');
   
@@ -224,7 +224,7 @@ function App() {
                   onChange={(e) => setRepoUrl(e.target.value)}
                   disabled={isRunning}
                   className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rift-500 transition-all disabled:bg-slate-50 disabled:text-slate-500"
-                  placeholder="https://github.com/..."
+                  placeholder="https://github.com/username/repository"
                 />
               </div>
             </div>
