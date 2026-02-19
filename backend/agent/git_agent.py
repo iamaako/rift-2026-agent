@@ -57,8 +57,8 @@ class GitAgent:
     
     async def commit_changes(self, commit_message: str):
         """Stage and commit all changes"""
-        # Escape commit message for shell
-        safe_message = commit_message.replace('"', '\\"').replace('$', '\\$')
+        # Escape commit message for shell - handle quotes and newlines
+        safe_message = commit_message.replace('"', '\\"').replace('\n', ' ').replace('\r', '')
         
         # Stage all changes
         returncode, stdout, stderr = await self._run_command("git add .")
@@ -66,13 +66,22 @@ class GitAgent:
         if returncode != 0:
             raise Exception(f"Failed to stage changes: {stderr}")
         
+        # Check if there are changes to commit
+        returncode, stdout, stderr = await self._run_command("git diff --cached --quiet")
+        
+        # If returncode is 0, no changes to commit
+        if returncode == 0:
+            return  # Nothing to commit, skip
+        
         # Commit
         returncode, stdout, stderr = await self._run_command(
             f'git commit -m "{safe_message}"'
         )
         
-        if returncode != 0 and "nothing to commit" not in stderr.lower():
-            raise Exception(f"Failed to commit: {stderr}")
+        if returncode != 0:
+            # Log the actual error for debugging
+            error_msg = f"Failed to commit: {stderr if stderr else stdout}"
+            raise Exception(error_msg)
     
     async def push_branch(self, branch_name: str):
         """Push branch to remote"""
