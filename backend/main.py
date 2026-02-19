@@ -11,8 +11,8 @@ from pydantic import BaseModel, HttpUrl
 from typing import Optional
 import uvicorn
 
-from agent.orchestrator import AgentOrchestrator
-from agent.state_manager import StateManager
+from backend.agent.orchestrator import AgentOrchestrator
+from backend.agent.state_manager import StateManager
 
 app = FastAPI(title="RIFT CI/CD Healing Agent API", version="1.0.0")
 
