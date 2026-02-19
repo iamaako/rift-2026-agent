@@ -1,0 +1,238 @@
+═══════════════════════════════════════════════════════════
+🚀 DEPLOYMENT STEPS - Heroku + Vercel (Web Interface)
+═══════════════════════════════════════════════════════════
+
+📦 STEP 1: GitHub Repository Setup
+───────────────────────────────────────────────────────────
+1. GitHub pe jao aur new repository banao
+2. Repository name: rift-2026-agent
+3. Public repository select karo
+4. Create repository
+
+5. Local code ko GitHub pe push karo:
+   
+   git init
+   git add .
+   git commit -m "Initial commit - RIFT 2026 Agent"
+   git branch -M main
+   git remote add origin https://github.com/YOUR_USERNAME/rift-2026-agent.git
+   git push -u origin main
+
+═══════════════════════════════════════════════════════════
+🔧 STEP 2: Backend Deploy - Heroku (Web Interface)
+═══════════════════════════════════════════════════════════
+
+1. Heroku Dashboard pe jao: https://dashboard.heroku.com/
+
+2. "New" button → "Create new app"
+
+3. App Settings:
+   - App name: rift-agent-backend (ya koi unique name)
+   - Region: United States
+   - Click "Create app"
+
+4. Deploy Tab:
+   - Deployment method: "GitHub" select karo
+   - "Connect to GitHub" pe click karo
+   - Repository search karo: rift-2026-agent
+   - "Connect" pe click karo
+
+5. Manual Deploy Section:
+   - Branch: main
+   - "Deploy Branch" pe click karo
+   - Wait for build to complete (2-3 minutes)
+
+6. Settings Tab → Config Vars:
+   - Click "Reveal Config Vars"
+   - Add karo:
+     
+     Key: GEMINI_API_KEY
+     Value: [Your Gemini API Key]
+     
+     Key: GITHUB_TOKEN
+     Value: [Your GitHub Token] (Optional)
+     
+     Key: PORT
+     Value: 8000
+
+7. Verify Deployment:
+   - "Open app" button pe click karo
+   - URL: https://rift-agent-backend.herokuapp.com
+   - Check: https://rift-agent-backend.herokuapp.com/health
+   - Should show: {"status": "healthy"}
+
+8. IMPORTANT - Backend URL copy kar lo:
+   https://rift-agent-backend.herokuapp.com
+   (Yeh frontend mein use hoga)
+
+═══════════════════════════════════════════════════════════
+🎨 STEP 3: Frontend Deploy - Vercel (Web Interface)
+═══════════════════════════════════════════════════════════
+
+1. Vercel Dashboard pe jao: https://vercel.com/dashboard
+
+2. "Add New..." → "Project"
+
+3. Import Git Repository:
+   - "Continue with GitHub" pe click karo
+   - Repository select karo: rift-2026-agent
+   - "Import" pe click karo
+
+4. Configure Project:
+   
+   Framework Preset: Vite
+   
+   Root Directory: frontend
+   (Click "Edit" aur "frontend" type karo)
+   
+   Build Command: npm run build
+   (Auto-detect ho jayega)
+   
+   Output Directory: dist
+   (Auto-detect ho jayega)
+   
+   Install Command: npm install
+   (Auto-detect ho jayega)
+
+5. Environment Variables:
+   - Click "Environment Variables"
+   - Add karo:
+     
+     Name: VITE_API_URL
+     Value: https://rift-agent-backend.herokuapp.com
+     (Yeh wahi backend URL hai jo step 2 mein mila)
+
+6. Deploy:
+   - "Deploy" button pe click karo
+   - Wait for deployment (1-2 minutes)
+
+7. Verify Deployment:
+   - Deployment complete hone ke baad URL milega
+   - URL: https://your-project.vercel.app
+   - Open karo aur check karo dashboard load ho raha hai
+
+═══════════════════════════════════════════════════════════
+🔄 STEP 4: Backend CORS Update (IMPORTANT!)
+═══════════════════════════════════════════════════════════
+
+Frontend deploy hone ke baad, backend mein CORS update karna hai:
+
+1. Local code mein backend/main.py open karo
+
+2. Line 18-26 pe CORS settings hai, update karo:
+
+   app.add_middleware(
+       CORSMiddleware,
+       allow_origins=[
+           "https://your-project.vercel.app",  # ← Apna Vercel URL
+           "http://localhost:5173"
+       ],
+       allow_credentials=True,
+       allow_methods=["*"],
+       allow_headers=["*"],
+   )
+
+3. Save karo aur GitHub pe push karo:
+   
+   git add .
+   git commit -m "Update CORS for production"
+   git push origin main
+
+4. Heroku automatically redeploy kar dega (if auto-deploy enabled)
+   Ya manually Deploy tab se "Deploy Branch" karo
+
+═══════════════════════════════════════════════════════════
+✅ STEP 5: Final Testing
+═══════════════════════════════════════════════════════════
+
+1. Frontend URL open karo: https://your-project.vercel.app
+
+2. Test karo:
+   - Repository URL enter karo
+   - Team name aur leader name enter karo
+   - "Run Agent" pe click karo
+   - Check karo real-time updates aa rahe hain
+
+3. Browser Console check karo (F12):
+   - Koi CORS error nahi hona chahiye
+   - API calls successful honi chahiye
+
+4. Backend logs check karo:
+   - Heroku Dashboard → More → View logs
+   - Errors check karo
+
+═══════════════════════════════════════════════════════════
+📝 STEP 6: URLs Update in README
+═══════════════════════════════════════════════════════════
+
+README.md mein apne URLs update karo:
+
+**Live Demo**: https://your-project.vercel.app
+**Backend API**: https://rift-agent-backend.herokuapp.com
+
+═══════════════════════════════════════════════════════════
+🎥 STEP 7: Demo Video & Submission
+═══════════════════════════════════════════════════════════
+
+1. Demo video banao (2-3 minutes):
+   - Dashboard dikhao
+   - Agent run karo
+   - Results dikhao
+
+2. LinkedIn pe post karo:
+   - Video upload karo
+   - @RIFT2026 tag karo
+   - Project description likho
+
+3. RIFT website pe submit karo:
+   - GitHub URL: https://github.com/YOUR_USERNAME/rift-2026-agent
+   - Frontend URL: https://your-project.vercel.app
+   - Backend URL: https://rift-agent-backend.herokuapp.com
+   - Video URL: [LinkedIn post link]
+
+═══════════════════════════════════════════════════════════
+🐛 TROUBLESHOOTING
+═══════════════════════════════════════════════════════════
+
+Problem: Heroku build fails
+Solution: 
+- Check Procfile hai root mein
+- Check requirements.txt hai root mein
+- Check runtime.txt hai root mein
+- Heroku logs dekho: More → View logs
+
+Problem: Frontend can't connect to backend
+Solution:
+- Check VITE_API_URL correct hai Vercel mein
+- Check backend CORS mein Vercel URL add hai
+- Browser console mein errors dekho
+
+Problem: Backend crashes
+Solution:
+- Heroku logs dekho
+- Check GEMINI_API_KEY set hai Config Vars mein
+- Check Python version runtime.txt mein
+
+═══════════════════════════════════════════════════════════
+✅ CHECKLIST
+═══════════════════════════════════════════════════════════
+
+□ GitHub repository banaya
+□ Code push kiya
+□ Heroku app banaya
+□ Backend deploy kiya
+□ Config vars set kiye (GEMINI_API_KEY)
+□ Backend health check pass
+□ Vercel project banaya
+□ Frontend deploy kiya
+□ Environment variable set kiya (VITE_API_URL)
+□ Frontend load ho raha hai
+□ Backend CORS update kiya
+□ End-to-end test successful
+□ Demo video banaya
+□ LinkedIn pe post kiya
+□ RIFT pe submit kiya
+
+═══════════════════════════════════════════════════════════
+
+Good luck! 🚀

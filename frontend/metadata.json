@@ -1,0 +1,5 @@
+{
+  "name": "RIFT 2026 DevOps Agent Dashboard",
+  "description": "Autonomous CI/CD Healing Agent Dashboard for RIFT 2026 Hackathon. Monitors automated repository analysis, bug fixing, and CI/CD status.",
+  "requestFramePermissions": []
+}

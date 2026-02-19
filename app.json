@@ -1,0 +1,21 @@
+{
+  "name": "RIFT 2026 Agent Backend",
+  "description": "Autonomous CI/CD Healing Agent - Backend API",
+  "repository": "https://github.com/your-username/rift-2026-agent",
+  "keywords": ["python", "fastapi", "ai", "devops", "rift2026"],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "env": {
+    "GEMINI_API_KEY": {
+      "description": "Gemini API Key for AI-powered fixes",
+      "required": true
+    },
+    "GITHUB_TOKEN": {
+      "description": "GitHub Personal Access Token for PR creation",
+      "required": false
+    }
+  }
+}
