@@ -89,14 +89,29 @@ function App() {
       
       // Check if run was not found (backend restarted)
       if (data.status === 'not_found') {
-        setError('Agent session lost. Backend may have restarted. Please start a new analysis.');
-        setIsRunning(false);
-        stopPolling();
+        console.warn('Run not found, keeping existing data');
+        // Don't reset - keep showing last known data
         return;
       }
       
-      setStage(data.stage as AgentStage);
-      setStats(data.stats);
+      // Only update if we have valid data
+      if (data.stage) {
+        setStage(data.stage as AgentStage);
+        
+        // Stop polling if agent completed or failed
+        if (data.stage === 'COMPLETED' || data.stage === 'FAILED' || data.stage === 'ERROR') {
+          console.log('Agent finished, stopping polling');
+          setIsRunning(false);
+          stopPolling();
+        }
+      }
+      if (data.stats) {
+        setStats(prev => ({
+          ...prev,
+          ...data.stats,
+          activeRepo: prev.activeRepo || data.stats.activeRepo
+        }));
+      }
     } catch (err) {
       console.error('Error fetching status:', err);
     }
@@ -108,7 +123,10 @@ function App() {
       if (!response.ok) return;
       
       const data = await response.json();
-      setLogs(data.logs);
+      // Only update if we have logs
+      if (data.logs && data.logs.length > 0) {
+        setLogs(data.logs);
+      }
     } catch (err) {
       console.error('Error fetching logs:', err);
     }
@@ -120,7 +138,10 @@ function App() {
       if (!response.ok) return;
       
       const data = await response.json();
-      setFixes(data.fixes);
+      // Only update if we have fixes
+      if (data.fixes && data.fixes.length > 0) {
+        setFixes(data.fixes);
+      }
     } catch (err) {
       console.error('Error fetching fixes:', err);
     }
@@ -132,7 +153,10 @@ function App() {
       if (!response.ok) return;
       
       const data = await response.json();
-      setCicdRuns(data.cicd_runs);
+      // Only update if we have CI/CD runs
+      if (data.cicd_runs && data.cicd_runs.length > 0) {
+        setCicdRuns(data.cicd_runs);
+      }
     } catch (err) {
       console.error('Error fetching CI/CD runs:', err);
     }
