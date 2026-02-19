@@ -243,6 +243,7 @@ Solution:
 1. Check Config Vars are set (GEMINI_API_KEY)
 2. View logs: More → View logs
 3. Check Python version in runtime.txt
+4. Check if Git is installed (Aptfile and .buildpacks configured)
 ```
 
 **Problem:** Health check fails
@@ -251,6 +252,40 @@ Solution:
 1. Check if app is running: heroku ps
 2. Check logs for errors
 3. Verify PORT is set to 8000
+```
+
+**Problem:** API endpoints return 404 (run_id not found)
+```
+This means the background agent task is failing. Debug steps:
+
+1. Check Heroku logs for [RIFT] messages:
+   - Look for "Created orchestrator with run_id"
+   - Look for "Background task error"
+   - Look for "Fatal error: Git not available"
+
+2. Verify Git is installed:
+   - Check .buildpacks file exists in root
+   - First line: https://github.com/heroku/heroku-buildpack-apt
+   - Second line: https://github.com/heroku/heroku-buildpack-python
+   - Check Aptfile exists with "git" and "git-core"
+
+3. Test health endpoint to see active runs:
+   curl https://your-backend.herokuapp.com/health
+   
+   If "active_runs" is 0 after starting analysis, background task failed.
+
+4. Check GEMINI_API_KEY is set correctly in Config Vars
+
+5. Try with a public test repository first
+```
+
+**Problem:** "Git not available" error
+```
+Solution:
+1. Ensure .buildpacks file exists in root directory
+2. Ensure Aptfile exists in root directory
+3. Redeploy the app (buildpacks only run during build)
+4. Check build logs for "apt" buildpack execution
 ```
 
 ### Frontend Issues
