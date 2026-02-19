@@ -35,6 +35,7 @@ function App() {
   const [fixes, setFixes] = useState<FixRecord[]>([]);
   const [cicdRuns, setCicdRuns] = useState<CICDRun[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [currentRunId, setCurrentRunId] = useState<string | null>(null);
   
   const uptimeRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -43,6 +44,8 @@ function App() {
   const startAgent = async () => {
     try {
       setError(null);
+      console.log('Starting agent with:', { repoUrl, teamName, teamLeader });
+      
       const response = await fetch(`${API_BASE_URL}/api/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -55,10 +58,14 @@ function App() {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to start agent');
+        const errorText = await response.text();
+        throw new Error(`Failed to start agent: ${errorText}`);
       }
       
       const data = await response.json();
+      console.log('Agent started with run_id:', data.run_id);
+      
+      setCurrentRunId(data.run_id);
       setIsRunning(true);
       
       // Start polling for updates
@@ -73,9 +80,21 @@ function App() {
   const fetchStatus = async (id: string) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/status/${id}`);
-      if (!response.ok) return;
+      if (!response.ok) {
+        console.warn(`Status fetch failed for ${id}: ${response.status}`);
+        return;
+      }
       
       const data = await response.json();
+      
+      // Check if run was not found (backend restarted)
+      if (data.status === 'not_found') {
+        setError('Agent session lost. Backend may have restarted. Please start a new analysis.');
+        setIsRunning(false);
+        stopPolling();
+        return;
+      }
+      
       setStage(data.stage as AgentStage);
       setStats(data.stats);
     } catch (err) {
@@ -170,6 +189,7 @@ function App() {
 
   const handleStop = () => {
     setIsRunning(false);
+    setCurrentRunId(null);
     stopPolling();
   };
 
@@ -178,6 +198,7 @@ function App() {
     setStats({ totalBugs: 0, fixedBugs: 0, failedFixes: 0, activeRepo: repoUrl, uptime: 0 });
     setFixes([]);
     setCicdRuns([]);
+    setCurrentRunId(null);
     startAgent();
   };
 
@@ -202,6 +223,12 @@ function App() {
                 {isRunning ? 'System Online' : 'System Offline'}
               </span>
             </div>
+            {currentRunId && (
+              <div className="hidden lg:flex items-center gap-2 px-3 py-1 bg-rift-800/50 rounded-lg border border-rift-700/50">
+                <span className="text-xs text-rift-300">Run ID:</span>
+                <span className="text-xs font-mono text-rift-100">{currentRunId.slice(0, 8)}</span>
+              </div>
+            )}
           </div>
         </div>
       </header>

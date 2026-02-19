@@ -116,7 +116,23 @@ async def get_status(run_id: str):
     """
     status = state_manager.get_status(run_id)
     if not status:
-        raise HTTPException(status_code=404, detail="Run ID not found")
+        # Return default status instead of 404 to prevent frontend errors
+        return {
+            "run_id": run_id,
+            "status": "not_found",
+            "stage": "IDLE",
+            "progress": 0,
+            "stats": {
+                "total_bugs": 0,
+                "fixed_bugs": 0,
+                "failed_fixes": 0,
+                "uptime": 0
+            },
+            "repo_url": "",
+            "team_name": "",
+            "team_leader": "",
+            "branch_name": ""
+        }
     return status
 
 
@@ -127,7 +143,8 @@ async def get_logs(run_id: str, limit: int = 100):
     """
     logs = state_manager.get_logs(run_id, limit=limit)
     if logs is None:
-        raise HTTPException(status_code=404, detail="Run ID not found")
+        # Return empty logs instead of 404
+        return {"logs": []}
     return {"logs": logs}
 
 
@@ -138,7 +155,8 @@ async def get_fixes(run_id: str):
     """
     fixes = state_manager.get_fixes(run_id)
     if fixes is None:
-        raise HTTPException(status_code=404, detail="Run ID not found")
+        # Return empty fixes instead of 404
+        return {"fixes": []}
     return {"fixes": fixes}
 
 
@@ -149,7 +167,8 @@ async def get_cicd_runs(run_id: str):
     """
     runs = state_manager.get_cicd_runs(run_id)
     if runs is None:
-        raise HTTPException(status_code=404, detail="Run ID not found")
+        # Return empty runs instead of 404
+        return {"cicd_runs": []}
     return {"cicd_runs": runs}
 
 
