@@ -19,8 +19,8 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 function App() {
   const [repoUrl, setRepoUrl] = useState('');
-  const [teamName, setTeamName] = useState('RIFT ORGANISERS');
-  const [teamLeader, setTeamLeader] = useState('Saiyam Kumar');
+  const [teamName, setTeamName] = useState('TEAM AMD');
+  const [teamLeader, setTeamLeader] = useState('AZHAN ALI');
   
   const [isRunning, setIsRunning] = useState(false);
   const [stage, setStage] = useState<AgentStage>(AgentStage.IDLE);
