@@ -59,7 +59,11 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    return {
+        "status": "healthy",
+        "active_runs": len(state_manager.runs),
+        "run_ids": list(state_manager.runs.keys())
+    }
 
 
 @app.post("/api/analyze")
@@ -79,8 +83,20 @@ async def analyze_repository(request: AnalyzeRequest, background_tasks: Backgrou
         
         run_id = orchestrator.run_id
         
-        # Start agent in background
-        background_tasks.add_task(orchestrator.run)
+        # Log initialization
+        print(f"[RIFT] Created orchestrator with run_id: {run_id}")
+        print(f"[RIFT] State manager has run: {run_id in state_manager.runs}")
+        
+        # Start agent in background - wrap in async function
+        async def run_agent():
+            try:
+                await orchestrator.run()
+            except Exception as e:
+                print(f"[RIFT] Background task error for {run_id}: {str(e)}")
+                orchestrator._log(f"Fatal error: {str(e)}", "error")
+                orchestrator._update_stage("ERROR", 0)
+        
+        background_tasks.add_task(run_agent)
         
         return {
             "run_id": run_id,
@@ -89,6 +105,7 @@ async def analyze_repository(request: AnalyzeRequest, background_tasks: Backgrou
         }
         
     except Exception as e:
+        print(f"[RIFT] Error creating orchestrator: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

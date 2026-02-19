@@ -67,6 +67,26 @@ class AgentOrchestrator:
         start_time = time.time()
         
         try:
+            # Check if git is available
+            try:
+                process = await asyncio.create_subprocess_shell(
+                    "git --version",
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE
+                )
+                await process.communicate()
+                if process.returncode != 0:
+                    raise Exception("Git is not installed or not accessible")
+            except Exception as e:
+                self._log(f"Fatal error: Git not available - {str(e)}", "error")
+                self._update_stage("ERROR", 0)
+                self.state_manager.finalize_run(self.run_id, {
+                    "final_status": "ERROR",
+                    "error": "Git not available",
+                    "end_time": datetime.now().isoformat()
+                })
+                return
+            
             # Stage 1: Clone Repository
             self._update_stage("CLONING", 10)
             self._log(f"git clone {self.repo_url}", "command")
