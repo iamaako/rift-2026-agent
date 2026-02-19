@@ -13,6 +13,8 @@ class GitAgent:
     def __init__(self, workspace_dir: str):
         self.workspace_dir = workspace_dir
         self.repo_dir = None
+        self.github_token = os.getenv("GITHUB_TOKEN")
+        self.repo_url = None
     
     async def _run_command(self, command: str, cwd: Optional[str] = None) -> tuple:
         """Run a shell command asynchronously"""
@@ -29,13 +31,21 @@ class GitAgent:
         """Clone a GitHub repository"""
         os.makedirs(self.workspace_dir, exist_ok=True)
         
+        self.repo_url = repo_url
+        
         # Extract repo name from URL
         repo_name = repo_url.rstrip('/').split('/')[-1].replace('.git', '')
         self.repo_dir = os.path.join(self.workspace_dir, repo_name)
         
+        # Clone with token if available
+        clone_url = repo_url
+        if self.github_token and "github.com" in repo_url:
+            # Convert to authenticated URL: https://TOKEN@github.com/user/repo.git
+            clone_url = repo_url.replace("https://", f"https://{self.github_token}@")
+        
         # Clone
         returncode, stdout, stderr = await self._run_command(
-            f"git clone {repo_url} {self.repo_dir}",
+            f"git clone {clone_url} {self.repo_dir}",
             cwd=self.workspace_dir
         )
         
@@ -85,6 +95,12 @@ class GitAgent:
     
     async def push_branch(self, branch_name: str):
         """Push branch to remote"""
+        # If we have a GitHub token, set up authenticated remote
+        if self.github_token and self.repo_url and "github.com" in self.repo_url:
+            # Set authenticated remote URL
+            auth_url = self.repo_url.replace("https://", f"https://{self.github_token}@")
+            await self._run_command(f"git remote set-url origin {auth_url}")
+        
         returncode, stdout, stderr = await self._run_command(
             f"git push -u origin {branch_name}"
         )

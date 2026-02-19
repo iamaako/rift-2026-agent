@@ -70,11 +70,24 @@ git push -u origin main
 2. Click **"Reveal Config Vars"**
 3. Add these variables:
 
-| Key | Value |
-|-----|-------|
-| `GEMINI_API_KEY` | Your Gemini API key |
-| `GITHUB_TOKEN` | Your GitHub token (optional) |
-| `PORT` | `8000` |
+| Key | Value | Required |
+|-----|-------|----------|
+| `GEMINI_API_KEY` | Your Gemini API key | ✅ Yes |
+| `GITHUB_TOKEN` | Your GitHub Personal Access Token | ⚠️ Recommended |
+| `PORT` | `8000` | ✅ Yes |
+
+**How to get GitHub Token:**
+1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Click "Generate new token (classic)"
+3. Give it a name: "RIFT Agent"
+4. Select scopes:
+   - ✅ `repo` (Full control of private repositories)
+   - ✅ `workflow` (Update GitHub Action workflows)
+5. Click "Generate token"
+6. Copy the token (starts with `ghp_...`)
+7. Paste in Heroku Config Vars as `GITHUB_TOKEN`
+
+**Note:** Without GitHub token, the agent will fix issues and commit locally, but won't be able to push to GitHub or create PRs automatically. You'll need to push manually.
 
 ### 2.5 Verify Backend
 
@@ -211,11 +224,13 @@ open https://rift-agent-backend.herokuapp.com/docs
 ## 🔐 Environment Variables Summary
 
 ### Heroku (Backend)
-| Variable | Required | Value |
-|----------|----------|-------|
-| `GEMINI_API_KEY` | ✅ Yes | Your Gemini API key |
-| `GITHUB_TOKEN` | ❌ Optional | Your GitHub token |
-| `PORT` | ✅ Yes | `8000` |
+| Variable | Required | Value | Purpose |
+|----------|----------|-------|---------|
+| `GEMINI_API_KEY` | ✅ Yes | Your Gemini API key | AI-powered fix generation |
+| `GITHUB_TOKEN` | ⚠️ Recommended | GitHub Personal Access Token | Push fixes and create PRs |
+| `PORT` | ✅ Yes | `8000` | Server port (auto-set by Heroku) |
+
+**Without GITHUB_TOKEN:** Agent will fix issues locally but cannot push to GitHub. You'll see a message: "Manual push required: git push origin BRANCH_NAME"
 
 ### Vercel (Frontend)
 | Variable | Required | Value |

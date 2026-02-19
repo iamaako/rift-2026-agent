@@ -170,15 +170,26 @@ class AgentOrchestrator:
                     self._update_stage("PUSHING", 90)
                     self._log(f"git push origin {self.branch_name}", "command")
                     
-                    await self.git_agent.push_branch(self.branch_name)
-                    
-                    self._log("Creating Pull Request...", "info")
-                    pr_url = await self.git_agent.create_pull_request(
-                        self.branch_name,
-                        f"[AI-AGENT] Fix Critical Issues - {self.team_name}",
-                        f"Automated fixes by {self.team_leader}'s AI Agent"
-                    )
-                    self._log(f"PR Created: {pr_url}", "success")
+                    try:
+                        await self.git_agent.push_branch(self.branch_name)
+                        
+                        self._log("Creating Pull Request...", "info")
+                        pr_url = await self.git_agent.create_pull_request(
+                            self.branch_name,
+                            f"[AI-AGENT] Fix Critical Issues - {self.team_name}",
+                            f"Automated fixes by {self.team_leader}'s AI Agent"
+                        )
+                        self._log(f"PR Created: {pr_url}", "success")
+                    except Exception as push_error:
+                        # If push fails due to auth, provide helpful message
+                        error_msg = str(push_error)
+                        if "could not read Username" in error_msg or "authentication" in error_msg.lower():
+                            self._log("Push failed: GitHub token not configured", "error")
+                            self._log("Set GITHUB_TOKEN in Heroku Config Vars to enable automatic push", "info")
+                            self._log(f"Manual push required: git push origin {self.branch_name}", "info")
+                        else:
+                            self._log(f"Push failed: {error_msg}", "error")
+                        # Don't fail the entire run, just mark as needing manual push
                     
                 else:
                     self.state_manager.update_cicd_run(self.run_id, cicd_run_id, "FAILED", duration)
