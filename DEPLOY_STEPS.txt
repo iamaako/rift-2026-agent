@@ -15,7 +15,7 @@
    git add .
    git commit -m "Initial commit - RIFT 2026 Agent"
    git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/rift-2026-agent.git
+   git remote add origin https://github.com/iamaako/rift-2026-agent.git
    git push -u origin main
 
 ═══════════════════════════════════════════════════════════
