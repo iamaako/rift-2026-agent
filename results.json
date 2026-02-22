@@ -1,0 +1,49 @@
+{
+  "teamName": "Amd",
+  "leaderName": "Aarif",
+  "branchName": "AMD_AARIF_AI_Fix",
+  "failuresDetected": 5,
+  "fixesApplied": 5,
+  "fixes": [
+    {
+      "file": "backend/agent/fixer_agent.py",
+      "bugType": "SYNTAX",
+      "line": 100,
+      "commitMessage": "[AI-AGENT] Fix syntax error: close dictionary and method in fixer_agent.py",
+      "status": "fixed",
+      "explanation": "The _generate_ai_fix method was truncated, leaving an unclosed dictionary and missing the method's closing logic."
+    },
+    {
+      "file": "backend/agent/git_agent.py",
+      "bugType": "LOGIC",
+      "line": 85,
+      "commitMessage": "[AI-AGENT] Complete commit_changes logic in git_agent.py",
+      "status": "fixed",
+      "explanation": "The commit_changes method was truncated after checking for changes. Added the logic to perform the actual commit if changes exist."
+    },
+    {
+      "file": "backend/agent/orchestrator.py",
+      "bugType": "SYNTAX",
+      "line": 95,
+      "commitMessage": "[AI-AGENT] Fix truncated error handling in orchestrator.py",
+      "status": "fixed",
+      "explanation": "The run method was truncated inside an exception handler, leaving an unclosed dictionary and block."
+    },
+    {
+      "file": "backend/agent/scanner_agent.py",
+      "bugType": "SYNTAX",
+      "line": 90,
+      "commitMessage": "[AI-AGENT] Fix truncated loop in scanner_agent.py",
+      "status": "fixed",
+      "explanation": "The _scan_javascript method was truncated while iterating over ESLint results."
+    },
+    {
+      "file": "backend/main.py",
+      "bugType": "SYNTAX",
+      "line": 115,
+      "commitMessage": "[AI-AGENT] Fix truncated route definition in main.py",
+      "status": "fixed",
+      "explanation": "The status endpoint was truncated at the definition line."
+    }
+  ]
+}
