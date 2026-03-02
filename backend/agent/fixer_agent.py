@@ -92,7 +92,21 @@ EXPLANATION:
             )
             
             response_text = response.text
-            
+            return {
+                "success": True,
+                "fixed_code": fixed_code,
+                "commit_message": commit_message or f"Fix {issue['type']} in {os.path.basename(issue['file'])}",
+                "explanation": explanation
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def _extract_section(self, text: str, section: str) -> str:
+        if f"{section}:" not in text:
+            return ""
+        parts = text.split(f"{section}:")
+        content = parts[1].split("COMMIT_MESSAGE:" if section == "FIXED_CODE" else "EXPLANATION:" if section == "COMMIT_MESSAGE" else "END_OF_FIX")[0]
+        return content.strip()
             # Parse response
             fixed_code = self._extract_section(response_text, "FIXED_CODE")
             commit_message = self._extract_section(response_text, "COMMIT_MESSAGE")
