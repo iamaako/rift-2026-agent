@@ -99,7 +99,18 @@ class ScannerAgent:
             print(f"ESLint scan failed: {e}")
         
         return issues
-    
+                for file_result in eslint_results:
+                    for message in file_result.get("messages", []):
+                        issues.append({
+                            "file": file_result.get("filePath", "unknown"),
+                            "line": message.get("line", 0),
+                            "type": "LINTING",
+                            "description": message.get("message", ""),
+                            "severity": "warning" if message.get("severity") == 1 else "error"
+                        })
+        except Exception as e:
+            print(f"ESLint scan failed: {e}")
+        return issues
     async def _scan_generic(self, repo_dir: str) -> List[Dict]:
         """Generic code scanning for common issues"""
         issues = []
