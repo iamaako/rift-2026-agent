@@ -115,7 +115,16 @@ async def get_status(run_id: str):
     Get current status of an agent run
     """
     status = state_manager.get_status(run_id)
-    if not status:
+@app.get("/api/status/{run_id}")
+async def get_status(run_id: str):
+    if run_id not in state_manager.runs:
+        raise HTTPException(status_code=404, detail="Run not found")
+    return {
+        "run": state_manager.runs[run_id],
+        "logs": state_manager.logs[run_id],
+        "fixes": state_manager.fixes[run_id],
+        "cicd_runs": state_manager.cicd_runs[run_id]
+    }
         # Return default status instead of 404 to prevent frontend errors
         return {
             "run_id": run_id,
