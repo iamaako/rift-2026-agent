@@ -1,0 +1,121 @@
+{
+  "teamName": "iamaako",
+  "leaderName": "iamaako",
+  "branchName": "iamaako_ai-fix",
+  "failuresDetected": 14,
+  "fixesApplied": 14,
+  "fixes": [
+    {
+      "file": "backend/agent/fixer_agent.py",
+      "bugType": "LINTING",
+      "line": 6,
+      "commitMessage": "[AI-AGENT] Remove unused import 'Dict'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'Dict'."
+    },
+    {
+      "file": "backend/agent/git_agent.py",
+      "bugType": "LINTING",
+      "line": 7,
+      "commitMessage": "[AI-AGENT] Remove unused import 'Optional'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'Optional'."
+    },
+    {
+      "file": "backend/agent/orchestrator.py",
+      "bugType": "LINTING",
+      "line": 4,
+      "commitMessage": "[AI-AGENT] Remove unused import 'os'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'os'."
+    },
+    {
+      "file": "backend/agent/orchestrator.py",
+      "bugType": "LINTING",
+      "line": 9,
+      "commitMessage": "[AI-AGENT] Remove unused import 'Dict'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'Dict'."
+    },
+    {
+      "file": "backend/agent/orchestrator.py",
+      "bugType": "LINTING",
+      "line": 15,
+      "commitMessage": "[AI-AGENT] Remove unused import 'StateManager'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'StateManager'."
+    },
+    {
+      "file": "backend/agent/scanner_agent.py",
+      "bugType": "LINTING",
+      "line": 7,
+      "commitMessage": "[AI-AGENT] Remove unused import 'List'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'List'."
+    },
+    {
+      "file": "backend/agent/state_manager.py",
+      "bugType": "LINTING",
+      "line": 7,
+      "commitMessage": "[AI-AGENT] Remove unused import 'Dict'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'Dict'."
+    },
+    {
+      "file": "backend/agent/test_agent.py",
+      "bugType": "LINTING",
+      "line": 8,
+      "commitMessage": "[AI-AGENT] Remove unused import 'Dict'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'Dict'."
+    },
+    {
+      "file": "backend/main.py",
+      "bugType": "LINTING",
+      "line": 6,
+      "commitMessage": "[AI-AGENT] Remove unused import 'asyncio'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'asyncio'."
+    },
+    {
+      "file": "backend/main.py",
+      "bugType": "LINTING",
+      "line": 8,
+      "commitMessage": "[AI-AGENT] Remove unused import 'CORSMiddleware'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'CORSMiddleware'."
+    },
+    {
+      "file": "backend/main.py",
+      "bugType": "LINTING",
+      "line": 9,
+      "commitMessage": "[AI-AGENT] Remove unused import 'JSONResponse'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'JSONResponse'."
+    },
+    {
+      "file": "backend/main.py",
+      "bugType": "LINTING",
+      "line": 10,
+      "commitMessage": "[AI-AGENT] Remove unused import 'BaseModel'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'BaseModel'."
+    },
+    {
+      "file": "backend/main.py",
+      "bugType": "LINTING",
+      "line": 11,
+      "commitMessage": "[AI-AGENT] Remove unused import 'Optional'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'Optional'."
+    },
+    {
+      "file": "frontend/components/Icons.tsx",
+      "bugType": "LINTING",
+      "line": 1,
+      "commitMessage": "[AI-AGENT] Remove unused import 'React'",
+      "status": "fixed",
+      "explanation": "Detected unused import for 'React'."
+    }
+  ]
+}
