@@ -81,7 +81,14 @@ class GitAgent:
         
         # If returncode is 0, no changes to commit
         if returncode == 0:
-            return  # Nothing to commit, skip
+        # Check if there are changes to commit
+        returncode, stdout, stderr = await self._run_command("git diff --cached --quiet")
+        if returncode == 0:
+            return  # No changes to commit
+
+        returncode, stdout, stderr = await self._run_command(f'git commit -m "{safe_message}"')
+        if returncode != 0:
+            raise Exception(f"Failed to commit changes: {stderr}")
         
         # Commit
         returncode, stdout, stderr = await self._run_command(
